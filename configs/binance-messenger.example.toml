@@ -1,0 +1,4 @@
+# API Key given on Binance
+api_key = "your api key"
+# Secret Key given on Binance 
+secret_key = "your secret key"
