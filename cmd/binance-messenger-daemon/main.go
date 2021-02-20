@@ -4,13 +4,12 @@ import (
 	"fmt"
 
 	"github.com/cryptellation/binance-messenger-service/pkg/server"
-
-	binance "github.com/adshao/go-binance/v2"
+	"github.com/cryptellation/binance-messenger-service/pkg/service"
 )
 
 func main() {
 	// Create binance client
-	b := binance.NewClient("", "")
+	b := service.New("", "")
 
 	// Create server
 	d := server.New(b)

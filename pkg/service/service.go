@@ -6,6 +6,7 @@ import (
 
 // Interface is an interface for service
 type Interface interface {
+	NewCandleStickService() CandleStickServiceInterface
 }
 
 // Service represents the Binance service
@@ -20,6 +21,13 @@ func New(apiKey, secretKey string) Interface {
 	}
 }
 
+// NewCandleStickService will create a new candlestick service
+func (s *Service) NewCandleStickService() CandleStickServiceInterface {
+	return &CandleStickService{
+		service: s.client.NewKlinesService(),
+	}
+}
+
 // MockedService represents the Binance service mocked
 type MockedService struct {
 }
@@ -27,4 +35,9 @@ type MockedService struct {
 // NewMock will create a mocked service
 func NewMock() Interface {
 	return &MockedService{}
+}
+
+// NewCandleStickService will create a new candlestick service
+func (m *MockedService) NewCandleStickService() CandleStickServiceInterface {
+	return &MockedCandleStickService{}
 }
