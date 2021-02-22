@@ -28,6 +28,9 @@ func (s *Service) NewCandleStickService() CandleStickServiceInterface {
 	}
 }
 
+// Mock section
+////////////////////////////////////////////////////////////////////////////////
+
 // MockedService represents the Binance service mocked
 type MockedService struct {
 }
