@@ -4,6 +4,7 @@ import (
 	"context"
 
 	binance "github.com/adshao/go-binance/v2"
+	"github.com/cryptellation/binance-messenger-service/pkg/service/adapters"
 	"github.com/cryptellation/models.go"
 )
 
@@ -19,8 +20,14 @@ type CandleStickService struct {
 
 // Do will execute a request for candlesticks
 func (s *CandleStickService) Do(ctx context.Context) ([]models.CandleStick, error) {
-	// TODO
-	return nil, nil
+	// Get KLines
+	kl, err := s.service.Do(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Change them to right format
+	return adapters.KLinesToCandleSticks(kl)
 }
 
 // Mock section
