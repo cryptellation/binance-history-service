@@ -16,6 +16,25 @@ func TestNewService(t *testing.T) {
 	}
 }
 
+func TestNewCandleStickService(t *testing.T) {
+	// Create a service
+	m := New("apiKey", "secretKey")
+
+	// Check nil on new candlestick service
+	s := m.NewCandleStickService()
+	if s == nil {
+		t.Fatal("New candlestick service should not be nil")
+	}
+
+	// Check type
+	if _, ok := s.(*CandleStickService); !ok {
+		t.Fatal("Service is not the good type")
+	}
+}
+
+// Mock Test
+////////////////////////////////////////////////////////////////////////////////
+
 func TestNewMockService(t *testing.T) {
 	m := NewMock()
 
