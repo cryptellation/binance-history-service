@@ -9,12 +9,10 @@ import (
 	"github.com/cryptellation/models.go"
 )
 
-type testCaseKLineToCandleStick struct {
+var testCasesKLineToCandleStick = []struct {
 	KLine       binance.Kline
 	CandleStick models.CandleStick
-}
-
-var testCasesKLineToCandleStick = []testCaseKLineToCandleStick{
+}{
 	{
 		KLine:       binance.Kline{OpenTime: 0, Open: "1.0", High: "2.0", Low: "0.5", Close: "1.5"},
 		CandleStick: models.CandleStick{Time: time.Unix(0, 0), Open: 1, High: 2, Low: 0.5, Close: 1.5},
@@ -109,5 +107,54 @@ func TestKLinesToCandleSticks_IncorrectClose(t *testing.T) {
 	c := []*binance.Kline{{OpenTime: 0, Open: "1.0", High: "2.0", Low: "0.5", Close: "error"}}
 	if _, err := KLinesToCandleSticks(c); err == nil {
 		t.Error("There should be an error on close")
+	}
+}
+
+var timeKLineToCandleStickTests = []struct {
+	BinanceTimestamp int64
+	Time             time.Time
+}{
+	{BinanceTimestamp: 1257894000000, Time: time.Unix(1257894000, 0)},
+}
+
+func TestTimeKLineToCandleStick(t *testing.T) {
+	for i, c := range timeKLineToCandleStickTests {
+		r := TimeKLineToCandleStick(c.BinanceTimestamp)
+		if r != c.Time {
+			t.Error("Times don't match on test", i, ":", c.Time, r)
+		}
+	}
+}
+
+var possibleIntervals = map[int64]string{
+	models.M1:  "1m",
+	models.M3:  "3m",
+	models.M5:  "5m",
+	models.M15: "15m",
+	models.M30: "30m",
+	models.H1:  "1h",
+	models.H2:  "2h",
+	models.H4:  "4h",
+	models.H6:  "6h",
+	models.H8:  "8h",
+	models.H12: "12h",
+	models.D1:  "1d",
+	models.D3:  "3d",
+	models.W1:  "1w",
+}
+
+func TestPeriodToInterval(t *testing.T) {
+	for k, v := range possibleIntervals {
+		if e, err := PeriodToInterval(k); err != nil {
+			t.Error("Interval for Period", k, "should not throw an error:", err)
+		} else if e != v {
+			t.Error("Interval for Period", k, "does not correspond : should be", v, "but is", e)
+		}
+	}
+}
+
+func TestPeriodToInterval_InexistantPeriod(t *testing.T) {
+	if _, err := PeriodToInterval(0); err == nil {
+		t.Error("Period 0 should throw an error")
 	}
 }

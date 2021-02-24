@@ -12,6 +12,7 @@ import (
 type CandleStickServiceInterface interface {
 	Do(ctx context.Context) ([]models.CandleStick, error)
 	Symbol(symbol string) CandleStickServiceInterface
+	Period(period int64) CandleStickServiceInterface
 }
 
 // CandleStickService is the real service for candlesticks
@@ -37,10 +38,22 @@ func (s *CandleStickService) Symbol(symbol string) CandleStickServiceInterface {
 	return s
 }
 
+// Period will specify a period for candlesticks next request
+func (s *CandleStickService) Period(period int64) CandleStickServiceInterface {
+	interval, err := adapters.PeriodToInterval(period)
+	if err != nil {
+		interval = "unknown"
+	}
+
+	s.service.Interval(interval)
+	return s
+}
+
 // Mock section
 ////////////////////////////////////////////////////////////////////////////////
 
-type testCandleSticks struct {
+// MockedCandleSticks are candlesticks that can be used in MockCandleStickService
+type MockedCandleSticks struct {
 	Symbol       string
 	Period       int64
 	CandleSticks []models.CandleStick
@@ -48,19 +61,27 @@ type testCandleSticks struct {
 
 // MockedCandleStickService is the mocked service for candlesticks
 type MockedCandleStickService struct {
-	TestCandleSticks []testCandleSticks
+	MockedCandleSticks []MockedCandleSticks
 
 	// Next request specifications
 	symbol string
+	period int64
 }
 
 // Do will execute a request for candlesticks
 func (m *MockedCandleStickService) Do(ctx context.Context) ([]models.CandleStick, error) {
 	cs := make([]models.CandleStick, 0)
-	for _, t := range m.TestCandleSticks {
+	for _, t := range m.MockedCandleSticks {
+		// Check if symbol is set and correspond
 		if m.symbol != "" && t.Symbol != m.symbol {
 			continue
 		}
+
+		// Check if period is set and correspond
+		if m.period != 0 && t.Period != m.period {
+			continue
+		}
+
 		cs = append(cs, t.CandleSticks...)
 	}
 	return cs, nil
@@ -69,5 +90,11 @@ func (m *MockedCandleStickService) Do(ctx context.Context) ([]models.CandleStick
 // Symbol will specify a symbol for candlesticks next request
 func (m *MockedCandleStickService) Symbol(symbol string) CandleStickServiceInterface {
 	m.symbol = symbol
+	return m
+}
+
+// Period will specify a period for candlesticks next request
+func (m *MockedCandleStickService) Period(period int64) CandleStickServiceInterface {
+	m.period = period
 	return m
 }

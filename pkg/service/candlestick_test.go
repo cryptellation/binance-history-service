@@ -8,7 +8,7 @@ import (
 	"github.com/cryptellation/models.go"
 )
 
-var tCS = []testCandleSticks{
+var tCS = []MockedCandleSticks{
 	{
 		"BTC-USDC", models.M1, []models.CandleStick{
 			{Time: time.Time{}, Open: 10, High: 10, Low: 10, Close: 10},
@@ -23,7 +23,7 @@ var tCS = []testCandleSticks{
 
 func TestMockedDo(t *testing.T) {
 	// Get new service
-	s := MockedCandleStickService{TestCandleSticks: tCS}
+	s := MockedCandleStickService{MockedCandleSticks: tCS}
 
 	// Do the service
 	cs, _ := s.Do(context.Background())
@@ -48,7 +48,7 @@ func TestMockedDo(t *testing.T) {
 
 func TestMockedSymbolDo(t *testing.T) {
 	// Get new service
-	s := MockedCandleStickService{TestCandleSticks: tCS}
+	s := MockedCandleStickService{MockedCandleSticks: tCS}
 
 	// Do the service with symbol
 	cs, _ := s.Symbol("BTC-USDC").Do(context.Background())
@@ -58,6 +58,24 @@ func TestMockedSymbolDo(t *testing.T) {
 
 	// Test corresponding case
 	for i, c := range tCS[0].CandleSticks {
+		if c != cs[i] {
+			t.Error("Candlesticks", i, "don't correspond")
+		}
+	}
+}
+
+func TestMockedIntervalDo(t *testing.T) {
+	// Get new service
+	s := MockedCandleStickService{MockedCandleSticks: tCS}
+
+	// Do the service with symbol
+	cs, _ := s.Period(models.M5).Do(context.Background())
+	if len(cs) != 2 {
+		t.Error("There should be 2 candlesticks")
+	}
+
+	// Test corresponding case
+	for i, c := range tCS[1].CandleSticks {
 		if c != cs[i] {
 			t.Error("Candlesticks", i, "don't correspond")
 		}

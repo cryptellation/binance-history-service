@@ -30,9 +30,9 @@ func Intervals() []int64 {
 	}
 }
 
-// IntervalToString converts an interval to its corresponding epoch
-func IntervalToString(interval int64) (e string, err error) {
-	switch interval {
+// PeriodToInterval converts an interval to its corresponding epoch
+func PeriodToInterval(period int64) (e string, err error) {
+	switch period {
 	case models.M1:
 		return "1m", nil
 	case models.M3:
@@ -62,17 +62,12 @@ func IntervalToString(interval int64) (e string, err error) {
 	case models.W1:
 		return "1w", nil
 	default:
-		return e, fmt.Errorf("interval error: unknown interval")
+		return e, fmt.Errorf("interval error: unknown period")
 	}
 }
 
-// TimeCandleToKLine will take the time from a candle and will convert it to Kline time
-func TimeCandleToKLine(t time.Time) int64 {
-	return t.Unix() * 1000
-}
-
-// TimeKLineToCandle will take the time from a kline and will convert it to candle time
-func TimeKLineToCandle(t int64) time.Time {
+// TimeKLineToCandleStick will take the time from a kline and will convert it to candle time
+func TimeKLineToCandleStick(t int64) time.Time {
 	return time.Unix(t/1000, 0)
 }
 
@@ -106,7 +101,7 @@ func KLineToCandleStick(k binance.Kline) (models.CandleStick, error) {
 
 	// Instanciate Candle
 	c = models.CandleStick{
-		Time:  TimeKLineToCandle(k.OpenTime),
+		Time:  TimeKLineToCandleStick(k.OpenTime),
 		Open:  open,
 		High:  high,
 		Low:   low,
