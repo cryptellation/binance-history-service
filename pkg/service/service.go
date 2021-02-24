@@ -27,20 +27,3 @@ func (s *Service) NewCandleStickService() CandleStickServiceInterface {
 		service: s.client.NewKlinesService(),
 	}
 }
-
-// Mock section
-////////////////////////////////////////////////////////////////////////////////
-
-// MockedService represents the Binance service mocked
-type MockedService struct {
-}
-
-// NewMock will create a mocked service
-func NewMock() Interface {
-	return &MockedService{}
-}
-
-// NewCandleStickService will create a new candlestick service
-func (m *MockedService) NewCandleStickService() CandleStickServiceInterface {
-	return &MockedCandleStickService{}
-}
