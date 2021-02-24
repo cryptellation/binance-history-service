@@ -28,7 +28,7 @@ var tCS = []MockedCandleSticks{
 
 func TestMockedDo(t *testing.T) {
 	// Get new service
-	s := MockedCandleStickService{MockedCandleSticks: tCS}
+	s := newMockedCandleStickService(tCS)
 
 	// Count candlesticks
 	var count int
@@ -57,9 +57,25 @@ func TestMockedDo(t *testing.T) {
 	}
 }
 
+func TestMockedDo_DefaultLimit(t *testing.T) {
+	localTest := []MockedCandleSticks{{"BTC-USDC", models.M1, []models.CandleStick{}}}
+	for i := 0; i < DefaultCandleStickServiceLimit+100; i++ {
+		localTest[0].CandleSticks = append(localTest[0].CandleSticks, models.CandleStick{})
+	}
+
+	// Get new service
+	s := newMockedCandleStickService(localTest)
+
+	// Do the service
+	cs, _ := s.Do(context.Background())
+	if len(cs) != DefaultCandleStickServiceLimit {
+		t.Error("There should be", DefaultCandleStickServiceLimit, "candlesticks but there is", len(cs))
+	}
+}
+
 func TestMockedSymbolDo(t *testing.T) {
 	// Get new service
-	s := MockedCandleStickService{MockedCandleSticks: tCS}
+	s := newMockedCandleStickService(tCS)
 
 	// Do the service with symbol
 	cs, _ := s.Symbol("BTC-USDC").Do(context.Background())
@@ -77,9 +93,9 @@ func TestMockedSymbolDo(t *testing.T) {
 
 func TestMockedIntervalDo(t *testing.T) {
 	// Get new service
-	s := MockedCandleStickService{MockedCandleSticks: tCS}
+	s := newMockedCandleStickService(tCS)
 
-	// Do the service with symbol
+	// Do the service with period
 	cs, _ := s.Period(models.M5).Do(context.Background())
 	if len(cs) != 2 {
 		t.Error("There should be 2 candlesticks")
@@ -95,9 +111,9 @@ func TestMockedIntervalDo(t *testing.T) {
 
 func TestMockedEndTimeDo(t *testing.T) {
 	// Get new service
-	s := MockedCandleStickService{MockedCandleSticks: tCS}
+	s := newMockedCandleStickService(tCS)
 
-	// Do the service with symbol
+	// Do the service with endtime
 	cs, _ := s.EndTime(time.Unix(1257893900, 0)).Do(context.Background())
 	if len(cs) != 2 {
 		t.Error("There should be 2 candlesticks but there is", len(cs))
@@ -108,5 +124,32 @@ func TestMockedEndTimeDo(t *testing.T) {
 		if c != cs[i] {
 			t.Error("Candlesticks", i, "don't correspond: should be", c, "but is", cs[i])
 		}
+	}
+}
+
+func TestMockedLimitDo(t *testing.T) {
+	// Get new service
+	s := newMockedCandleStickService(tCS)
+
+	// Do the service with limit
+	cs, _ := s.Limit(4).Do(context.Background())
+	if len(cs) != 4 {
+		t.Error("There should be 4 candlesticks but there is", len(cs))
+	}
+}
+
+func TestMockedLimitDo_DefaultLimitTrespassed(t *testing.T) {
+	localTest := []MockedCandleSticks{{"BTC-USDC", models.M1, []models.CandleStick{}}}
+	for i := 0; i < DefaultCandleStickServiceLimit+100; i++ {
+		localTest[0].CandleSticks = append(localTest[0].CandleSticks, models.CandleStick{})
+	}
+
+	// Get new service
+	s := newMockedCandleStickService(localTest)
+
+	// Do the service with limit
+	cs, _ := s.Limit(2000).Do(context.Background())
+	if len(cs) != DefaultCandleStickServiceLimit {
+		t.Error("There should be", DefaultCandleStickServiceLimit, "candlesticks but there is", len(cs))
 	}
 }

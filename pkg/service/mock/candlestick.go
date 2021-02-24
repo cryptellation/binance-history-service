@@ -8,6 +8,9 @@ import (
 	"github.com/cryptellation/models.go"
 )
 
+// DefaultCandleStickServiceLimit is the limit for CandleStick service if none is specified
+var DefaultCandleStickServiceLimit = 1000
+
 // MockedCandleSticks are candlesticks that can be used in MockCandleStickService
 type MockedCandleSticks struct {
 	Symbol       string
@@ -23,11 +26,20 @@ type MockedCandleStickService struct {
 	symbol  string
 	period  int64
 	endTime time.Time
+	limit   int
+}
+
+func newMockedCandleStickService(cs []MockedCandleSticks) *MockedCandleStickService {
+	return &MockedCandleStickService{
+		MockedCandleSticks: cs,
+		limit:              DefaultCandleStickServiceLimit,
+	}
 }
 
 // Do will execute a request for candlesticks
 func (m *MockedCandleStickService) Do(ctx context.Context) ([]models.CandleStick, error) {
 	cs := make([]models.CandleStick, 0)
+	count := 0
 	for _, t := range m.MockedCandleSticks {
 		// Check if symbol is set and correspond
 		if m.symbol != "" && t.Symbol != m.symbol {
@@ -35,12 +47,18 @@ func (m *MockedCandleStickService) Do(ctx context.Context) ([]models.CandleStick
 		}
 
 		// Check if period is set and correspond
+		// TODO check if period is valid or throw an error
 		if m.period != 0 && t.Period != m.period {
 			continue
 		}
 
 		// Check each candle
 		for _, c := range t.CandleSticks {
+			// Check if count as trespassed limit
+			if count >= m.limit {
+				break
+			}
+
 			// Check if endtime is send and correspond
 			if !m.endTime.IsZero() && m.endTime.After(c.Time) {
 				continue
@@ -48,6 +66,7 @@ func (m *MockedCandleStickService) Do(ctx context.Context) ([]models.CandleStick
 
 			// Add it if it passed tests
 			cs = append(cs, c)
+			count++
 		}
 	}
 	return cs, nil
@@ -69,5 +88,16 @@ func (m *MockedCandleStickService) Period(period int64) service.CandleStickServi
 // next candlesticks request
 func (m *MockedCandleStickService) EndTime(endTime time.Time) service.CandleStickServiceInterface {
 	m.endTime = endTime
+	return m
+}
+
+// Limit will specify the number of candlesticks the list should have at its maximum
+// If the limit is higher than the default limit, it will be limited to this one
+func (m *MockedCandleStickService) Limit(limit int) service.CandleStickServiceInterface {
+	if limit < DefaultCandleStickServiceLimit {
+		m.limit = limit
+	} else {
+		m.limit = DefaultCandleStickServiceLimit
+	}
 	return m
 }

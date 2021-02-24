@@ -15,6 +15,7 @@ type CandleStickServiceInterface interface {
 	Symbol(symbol string) CandleStickServiceInterface
 	Period(period int64) CandleStickServiceInterface
 	EndTime(endTime time.Time) CandleStickServiceInterface
+	Limit(limit int) CandleStickServiceInterface
 }
 
 // CandleStickService is the real service for candlesticks
@@ -56,5 +57,12 @@ func (s *CandleStickService) Period(period int64) CandleStickServiceInterface {
 func (s *CandleStickService) EndTime(endTime time.Time) CandleStickServiceInterface {
 	binanceTime := adapters.TimeCandleStickToKLine(endTime)
 	s.service.EndTime(binanceTime)
+	return s
+}
+
+// Limit will specify the number of candlesticks the list should have at its maximum
+// If the limit is higher than the default limit, it will be limited to this one
+func (s *CandleStickService) Limit(limit int) CandleStickServiceInterface {
+	s.service.Limit(limit)
 	return s
 }
