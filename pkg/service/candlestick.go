@@ -11,6 +11,7 @@ import (
 // CandleStickServiceInterface is the interface for candle stick services
 type CandleStickServiceInterface interface {
 	Do(ctx context.Context) ([]models.CandleStick, error)
+	Symbol(symbol string) CandleStickServiceInterface
 }
 
 // CandleStickService is the real service for candlesticks
@@ -30,11 +31,16 @@ func (s *CandleStickService) Do(ctx context.Context) ([]models.CandleStick, erro
 	return adapters.KLinesToCandleSticks(kl)
 }
 
+// Symbol will specify a symbol for candlesticks next request
+func (s *CandleStickService) Symbol(symbol string) CandleStickServiceInterface {
+	s.service.Symbol(symbol)
+	return s
+}
+
 // Mock section
 ////////////////////////////////////////////////////////////////////////////////
 
 type testCandleSticks struct {
-	Exchange     string
 	Symbol       string
 	Period       int64
 	CandleSticks []models.CandleStick
@@ -43,13 +49,25 @@ type testCandleSticks struct {
 // MockedCandleStickService is the mocked service for candlesticks
 type MockedCandleStickService struct {
 	TestCandleSticks []testCandleSticks
+
+	// Next request specifications
+	symbol string
 }
 
 // Do will execute a request for candlesticks
 func (m *MockedCandleStickService) Do(ctx context.Context) ([]models.CandleStick, error) {
 	cs := make([]models.CandleStick, 0)
 	for _, t := range m.TestCandleSticks {
+		if m.symbol != "" && t.Symbol != m.symbol {
+			continue
+		}
 		cs = append(cs, t.CandleSticks...)
 	}
 	return cs, nil
+}
+
+// Symbol will specify a symbol for candlesticks next request
+func (m *MockedCandleStickService) Symbol(symbol string) CandleStickServiceInterface {
+	m.symbol = symbol
+	return m
 }
