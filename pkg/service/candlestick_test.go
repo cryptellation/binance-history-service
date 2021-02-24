@@ -19,16 +19,27 @@ var tCS = []MockedCandleSticks{
 			{Time: time.Time{}, Open: 20, High: 20, Low: 20, Close: 20},
 			{Time: time.Time{}, Open: 25, High: 25, Low: 25, Close: 25}},
 	},
+	{
+		"IOTA-USDC", models.M15, []models.CandleStick{
+			{Time: time.Unix(1257894000, 0), Open: 30, High: 30, Low: 30, Close: 30},
+			{Time: time.Unix(1257894900, 0), Open: 35, High: 35, Low: 35, Close: 35}},
+	},
 }
 
 func TestMockedDo(t *testing.T) {
 	// Get new service
 	s := MockedCandleStickService{MockedCandleSticks: tCS}
 
+	// Count candlesticks
+	var count int
+	for _, c := range tCS {
+		count += len(c.CandleSticks)
+	}
+
 	// Do the service
 	cs, _ := s.Do(context.Background())
-	if len(cs) != 4 {
-		t.Error("There should be 4 candlesticks")
+	if len(cs) != count {
+		t.Error("There should be", count, "candlesticks")
 	}
 
 	// Test first case
@@ -78,6 +89,24 @@ func TestMockedIntervalDo(t *testing.T) {
 	for i, c := range tCS[1].CandleSticks {
 		if c != cs[i] {
 			t.Error("Candlesticks", i, "don't correspond")
+		}
+	}
+}
+
+func TestMockedEndTimeDo(t *testing.T) {
+	// Get new service
+	s := MockedCandleStickService{MockedCandleSticks: tCS}
+
+	// Do the service with symbol
+	cs, _ := s.EndTime(time.Unix(1257893900, 0)).Do(context.Background())
+	if len(cs) != 2 {
+		t.Error("There should be 2 candlesticks but there is", len(cs))
+	}
+
+	// Test corresponding case
+	for i, c := range tCS[2].CandleSticks {
+		if c != cs[i] {
+			t.Error("Candlesticks", i, "don't correspond: should be", c, "but is", cs[i])
 		}
 	}
 }

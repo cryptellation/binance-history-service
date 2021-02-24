@@ -126,6 +126,15 @@ func TestTimeKLineToCandleStick(t *testing.T) {
 	}
 }
 
+func TestTimeCandleStickToKLine(t *testing.T) {
+	for i, c := range timeKLineToCandleStickTests {
+		r := TimeCandleStickToKLine(c.Time)
+		if r != c.BinanceTimestamp {
+			t.Error("Times don't match on test", i, ":", c.BinanceTimestamp, r)
+		}
+	}
+}
+
 var possibleIntervals = map[int64]string{
 	models.M1:  "1m",
 	models.M3:  "3m",

@@ -66,6 +66,11 @@ func PeriodToInterval(period int64) (e string, err error) {
 	}
 }
 
+// TimeCandleStickToKLine will take the time from a candle and will convert it to Kline time
+func TimeCandleStickToKLine(t time.Time) int64 {
+	return t.Unix() * 1000
+}
+
 // TimeKLineToCandleStick will take the time from a kline and will convert it to candle time
 func TimeKLineToCandleStick(t int64) time.Time {
 	return time.Unix(t/1000, 0)
