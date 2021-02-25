@@ -1,6 +1,6 @@
 package server
 
-import "github.com/cryptellation/binance-messenger-service/pkg/service"
+import "github.com/cryptellation/binance-history-service/pkg/service"
 
 var version = "1.0.0"
 

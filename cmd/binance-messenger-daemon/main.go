@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/cryptellation/binance-messenger-service/pkg/server"
-	"github.com/cryptellation/binance-messenger-service/pkg/service"
+	"github.com/cryptellation/binance-history-service/pkg/server"
+	"github.com/cryptellation/binance-history-service/pkg/service"
 )
 
 func main() {

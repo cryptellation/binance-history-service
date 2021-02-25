@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/cryptellation/binance-messenger-service/pkg/service"
+	"github.com/cryptellation/binance-history-service/pkg/service"
 	"github.com/cryptellation/models.go"
 )
 

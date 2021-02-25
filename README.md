@@ -1,3 +1,3 @@
-# Binance Messenger Service
+# Binance History Service
 
-Micro-service for Binance informations, orders and events.
+Micro-service for Binance history retrieving.

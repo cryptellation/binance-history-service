@@ -1,6 +1,6 @@
 package mock
 
-import "github.com/cryptellation/binance-messenger-service/pkg/service"
+import "github.com/cryptellation/binance-history-service/pkg/service"
 
 // MockedService represents the Binance service mocked
 type MockedService struct {
