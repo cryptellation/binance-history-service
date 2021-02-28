@@ -1,16 +1,16 @@
 package server
 
-import "github.com/cryptellation/binance-history-service/pkg/service"
+import binance "github.com/cryptellation/binance.go"
 
 var version = "1.0.0"
 
 // Server is the messenger binance server
 type Server struct {
-	binance service.Interface
+	binance binance.Interface
 }
 
 // New will create a new server
-func New(binance service.Interface) *Server {
+func New(binance binance.Interface) *Server {
 	return &Server{
 		binance: binance,
 	}

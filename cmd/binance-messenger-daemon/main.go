@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	"github.com/cryptellation/binance-history-service/pkg/server"
-	"github.com/cryptellation/binance-history-service/pkg/service"
+	binance "github.com/cryptellation/binance.go"
 )
 
 func main() {
 	// Create binance client
-	b := service.New("", "")
+	b := binance.New("", "")
 
 	// Create server
 	d := server.New(b)
