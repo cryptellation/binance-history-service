@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/cryptellation/binance.go/mock"
-	"github.com/cryptellation/models.go"
 )
 
 func checkResponseCode(t *testing.T, expected, actual int) {
@@ -28,11 +27,12 @@ func TestCandles(t *testing.T) {
 	checkResponseCode(t, http.StatusOK, response.Code)
 
 	// Analyse response
-	var cs []models.CandleStick
-	json.Unmarshal(response.Body.Bytes(), &cs)
+	var resp CandleSticksResponse
+	json.Unmarshal(response.Body.Bytes(), &resp)
 
 	// Check length
-	if len(cs) != mock.TestCandleSticksCount() {
-		t.Fatal("There should be", mock.TestCandleSticksCount(), "candlestick, but there is", len(cs))
+	if len(resp.CandleSticks) != mock.TestCandleSticksCount() {
+		t.Fatal("There should be", mock.TestCandleSticksCount(),
+			"candlestick, but there is", len(resp.CandleSticks))
 	}
 }

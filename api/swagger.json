@@ -1,0 +1,76 @@
+{
+  "swagger": "2.0",
+  "paths": {
+    "/candlesticks": {
+      "get": {
+        "description": "This will returns candlesticks based on arguments",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "CandleSticks"
+        ],
+        "operationId": "CandleSticksRequest",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/CandleSticksResponse"
+          },
+          "500": {
+            "$ref": "#/responses/ErrorResponse"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CandleStick": {
+      "description": "CandleStick represents an OHLC candlestick",
+      "type": "object",
+      "properties": {
+        "close": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Close"
+        },
+        "high": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "High"
+        },
+        "low": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Low"
+        },
+        "open": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Open"
+        },
+        "time": {
+          "type": "string",
+          "format": "date-time",
+          "x-go-name": "Time"
+        }
+      },
+      "x-go-package": "github.com/cryptellation/models.go"
+    }
+  },
+  "responses": {
+    "CandleSticksResponse": {
+      "description": "CandleSticksResponse represents a response for candlesticks",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/CandleStick"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "description": "ErrorResponse will acknowledge informations on error"
+    }
+  }
+}
