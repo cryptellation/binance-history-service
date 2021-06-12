@@ -18,5 +18,5 @@ func ConfigFromFile(path string) (c Config, err error) {
 
 	// Change into structure
 	err = tree.Unmarshal(&c)
-	return c, nil
+	return c, err
 }
