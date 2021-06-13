@@ -13,6 +13,12 @@ type Route struct {
 func (s *Server) setRoutes() {
 	routes := []Route{
 		{
+			Name:        "Ping",
+			Method:      "GET",
+			Pattern:     "/ping",
+			HandlerFunc: s.Ping,
+		},
+		{
 			Name:        "CandleSticks",
 			Method:      "GET",
 			Pattern:     "/candlesticks",

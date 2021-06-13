@@ -3,7 +3,7 @@ package main
 import "testing"
 
 func defaultConfig() (Config, error) {
-	return ConfigFromFile("../../configs/binance-messenger.example.toml")
+	return ConfigFromFile("../../configs/binance-history-service.example.toml")
 }
 
 func TestConfigFromFile(t *testing.T) {
@@ -20,5 +20,11 @@ func TestConfigFromFile(t *testing.T) {
 	// Test SecretKey
 	if c.SecretKey != "your secret key" {
 		t.Error("Default Secret key is incorrect:", c.SecretKey)
+	}
+}
+
+func TestConfigFromFile_NoFile(t *testing.T) {
+	if _, err := ConfigFromFile("/do/not/exist"); err == nil {
+		t.Fatal("There should be no file")
 	}
 }

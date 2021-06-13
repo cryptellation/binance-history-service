@@ -23,6 +23,20 @@
           }
         }
       }
+    },
+    "/ping": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "summary": "This will returns a string with \"pong\"",
+        "operationId": "Ping",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/PingResponse"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -71,6 +85,9 @@
     },
     "ErrorResponse": {
       "description": "ErrorResponse will acknowledge informations on error"
+    },
+    "PingResponse": {
+      "description": "PingResponse represents a response for ping"
     }
   }
 }

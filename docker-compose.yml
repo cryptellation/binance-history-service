@@ -2,16 +2,15 @@ version: "3.5"
 
 services:
     running:
-        build:
-            context: ./
-            dockerfile: deployments/development.dockerfile
+        image: cryptellation/golang-dev
         volumes:
             - .:/code
-        entrypoint: ["bash", "scripts/hot-reload-run.sh"]
-    testing:
-        build:
-            context: ./
-            dockerfile: deployments/development.dockerfile
+        environment: 
+            - DIRECTORY=cmd/service
+            - BINARY=service
+        entrypoint: ["bash", "/scripts/hot-reload-run.sh"]
+    unit-tests:
+        image: cryptellation/golang-dev
         volumes:
             - .:/code
-        entrypoint: ["bash", "scripts/hot-reload-tests.sh"]
+        entrypoint: ["bash", "/scripts/hot-reload-tests.sh"]

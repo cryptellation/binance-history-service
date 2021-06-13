@@ -37,7 +37,7 @@ func (s *Server) CandleSticks(w http.ResponseWriter, r *http.Request) {
 	var resp CandleSticksResponse
 	var err error
 
-	resp.CandleSticks, err = s.binance.NewCandleStickService().Do(context.Background())
+	resp.CandleSticks, err = s.binance.NewCandleStickService().Do(context.TODO())
 	if err != nil {
 		httpError(w, http.StatusInternalServerError, err)
 		return

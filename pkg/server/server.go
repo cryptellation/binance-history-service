@@ -1,7 +1,10 @@
 package server
 
 import (
-	binance "github.com/cryptellation/binance.go"
+	"net/http"
+	"time"
+
+	"github.com/cryptellation/binance.go/pkg/binance"
 	"github.com/gorilla/mux"
 )
 
@@ -9,19 +12,17 @@ var version = "1.0.0"
 
 // Server is the messenger binance server
 type Server struct {
-	binance binance.Interface
+	binance binance.ServiceInterface
 	router  *mux.Router
 }
 
 // New will create a new server
-func New(binance binance.Interface) *Server {
-	// Create server
+func New(binance binance.ServiceInterface) *Server {
 	s := &Server{
 		binance: binance,
 		router:  mux.NewRouter(),
 	}
 
-	// Set routes
 	s.setRoutes()
 
 	return s
@@ -30,4 +31,15 @@ func New(binance binance.Interface) *Server {
 // Version returns the server version
 func (s *Server) Version() string {
 	return version
+}
+
+func (s *Server) Serve(addr string) error {
+	srv := &http.Server{
+		Handler:      s.router,
+		Addr:         addr,
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+
+	return srv.ListenAndServe()
 }
